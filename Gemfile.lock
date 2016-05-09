@@ -1,0 +1,16 @@
+GEM
+  specs:
+    descriptive-statistics (2.1.2)
+    gruff (0.6.0)
+      rmagick (>= 2.13.4)
+    rmagick (2.15.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  descriptive-statistics
+  gruff
+
+BUNDLED WITH
+   1.11.2
