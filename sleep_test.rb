@@ -2,19 +2,18 @@ require_relative 'wynmark.rb'
 include WynMarker
 
 OPTIONS = {
-  cycles: 1, # total number of cycles
   batch: 15,
   warmup: 0,
 }
 
 def original_code
-  # Put the original code here
+  # original code here
   sleep 0.104
 end
 
 
 def new_code
-  # Put the new code here
+  # new code here
   sleep 0.1
 end
 
