@@ -2,8 +2,7 @@ require_relative 'wynmark.rb'
 include WynMarker
 
 OPTIONS = {
-  cycles: 1, # total number of cycles
-  warmup: 2,
+  warmup: 0,
   batch: 100,
 }
 
