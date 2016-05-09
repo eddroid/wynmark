@@ -35,7 +35,9 @@ module WynMarker
       '-2stdev min', min_diff
 
     deltas.each { |d|
-      puts "Outlier? #{d} at #{deltas.index(d)}" if (d > max_diff or d < min_diff)
+      if (d > max_diff or d < min_diff)
+        puts "Potential outlier #{d} at position #{deltas.index(d)}"
+      end
     }
 
     if min_diff <= 0 and max_diff <= 0
