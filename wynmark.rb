@@ -1,7 +1,9 @@
 # inspired by http://on-ruby.blogspot.com/2006/12/benchmarking-lies-and-statistics.html
-%w[benchmark descriptive-statistics gruff].each { |lib| require lib }
+%w[benchmark descriptive-statistics gruff command_line_reporter].each { |lib| require lib }
 
 module WynMarker
+  include CommandLineReporter
+
   def marks(batch_size)
     batch_size.times.to_a.map! do
       Benchmark.realtime { yield }
@@ -28,11 +30,7 @@ module WynMarker
     max_diff = mean + 2 * stdev
     min_diff = mean - 2 * stdev
 
-    p 'mean', mean, 
-      'median', stats.median, 
-      'stdev', stdev, 
-      '2stdev max', max_diff, 
-      '-2stdev min', min_diff
+    table_result(mean, stats.median, stdev, max_diff, min_diff)
 
     deltas.each { |d|
       if (d > max_diff or d < min_diff)
@@ -65,6 +63,41 @@ module WynMarker
     g.data("Original Code", orig_marks)
     g.data("New Code", new_marks)
     g.write('results.png')
-    `open results.png`
+    begin
+      `open results.png`
+    rescue
+      # I'm guessing this is Ubuntu's way of opening images from the Terminal
+      `gnome-open results.png` rescue nil
+    end
+  end
+
+  NUM_FORMATTER = '%.10f'
+  def table_result(mean, median, stdev, max, min) 
+    table(border: true) do
+      row(header: true) do
+        column 'stat', width: 13
+        column 'time in seconds', width: 15, align: 'right'
+      end
+      row do
+        column 'mean'
+        column NUM_FORMATTER % mean
+      end
+      row do
+        column 'median'
+        column NUM_FORMATTER % median
+      end
+      row do
+        column 'stdev'
+        column NUM_FORMATTER % stdev
+      end
+      row do
+        column 'max (2stdev)'
+        column NUM_FORMATTER % max
+      end
+      row do
+        column 'min (-2stdev)'
+        column NUM_FORMATTER % min
+      end
+    end
   end
 end

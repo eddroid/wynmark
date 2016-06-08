@@ -1,5 +1,9 @@
 GEM
+  remote: https://rubygems.org/
   specs:
+    colored (1.2)
+    command_line_reporter (3.3.6)
+      colored (>= 1.2)
     descriptive-statistics (2.1.2)
     gruff (0.6.0)
       rmagick (>= 2.13.4)
@@ -9,6 +13,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  command_line_reporter
   descriptive-statistics
   gruff
 
