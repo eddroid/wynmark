@@ -1,7 +1,7 @@
 # inspired by http://on-ruby.blogspot.com/2006/12/benchmarking-lies-and-statistics.html
 %w[benchmark descriptive-statistics gruff command_line_reporter].each { |lib| require lib }
 
-module WynMarker
+module WynMark
   include CommandLineReporter
 
   def marks(batch_size)
@@ -50,10 +50,7 @@ module WynMarker
     end
   end
 
-  # installation instructions for gruff:
-  # 
-  # brew install gs
-  # gem install gruff
+  # graph the results in gruff
   def graph_results(orig_marks, new_marks)
     g = Gruff::Dot.new(800)
     g.title = 'WynMark Results'
@@ -62,15 +59,33 @@ module WynMarker
     }
     g.data("Original Code", orig_marks)
     g.data("New Code", new_marks)
-    g.write('results.png')
+
     begin
+      g.write('results.png')
+    rescue => e
+      # better error
+      # 
+      # via: http://stackoverflow.com/questions/1014506/imagemagickerror-unable-to-read-font-null-null 
+      #
+      # brew install gs
+      if e.message['unable to read font']
+        puts "If you're on a Mac, you need to `brew install gs`"
+      end
+      raise e
+    end
+
+    begin
+      # mac open image from Terminal
       `open results.png`
     rescue
-      # I'm guessing this is Ubuntu's way of opening images from the Terminal
+      # guessing this is Ubuntu's way of opening images from the Terminal
       `gnome-open results.png` rescue nil
     end
   end
 
+  #
+  # Prettified statistics result table display.
+  #
   NUM_FORMATTER = '%.10f'
   def table_result(mean, median, stdev, max, min) 
     table(border: true) do

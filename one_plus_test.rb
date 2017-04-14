@@ -1,5 +1,5 @@
 require_relative 'wynmark.rb'
-include WynMarker
+include WynMark
 
 OPTIONS = {
   warmup: 0,
@@ -18,11 +18,11 @@ def new_code
 end
 
 orig_marks = warmup_and_mark(
-   OPTIONS[:warmup], 
+   OPTIONS[:warmup],
    OPTIONS[:batch]) { original_code }
 
 new_marks = warmup_and_mark(
-  OPTIONS[:warmup], 
+  OPTIONS[:warmup],
   OPTIONS[:batch]) { new_code }
 
 
