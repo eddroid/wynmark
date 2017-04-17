@@ -34,7 +34,7 @@ module WynMark
 
     deltas.each { |d|
       if (d > top or d < bottom)
-        puts "Potential outlier #{d} at position #{deltas.index(d)}"
+        puts "Potential outlier #{d} at sample #{deltas.index(d)}"
       end
     }
 
