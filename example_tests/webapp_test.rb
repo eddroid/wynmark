@@ -1,4 +1,4 @@
-require_relative 'wynmark.rb'
+require_relative '../wynmark.rb'
 include WynMark
 require 'open-uri'
 

@@ -1,4 +1,4 @@
-require_relative 'wynmark.rb'
+require_relative '../wynmark.rb'
 include WynMark
 
 OPTIONS = {
@@ -8,7 +8,7 @@ OPTIONS = {
 
 def original_code
   # original code here
-  sleep 0.104
+  sleep 0.105
 end
 
 

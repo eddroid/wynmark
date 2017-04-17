@@ -18,30 +18,30 @@ module WynMark
   end
 
   def calculate_significance(orig_marks, new_marks)
+    table_stats 'Original', orig_marks
+    table_stats 'New', new_marks
+
     # Pairwise difference between marks
+    #   normalize the distribution around 0
     deltas = orig_marks.zip(new_marks).map { |orig, new|
       orig - new
     }
+    stats = table_stats 'Deltas', deltas
 
-    stats = DescriptiveStatistics::Stats.new(deltas)
-    mean = stats.mean
-    stdev = stats.standard_deviation
-
-    max_diff = mean + 2 * stdev
-    min_diff = mean - 2 * stdev
-
-    table_result(mean, stats.median, stdev, max_diff, min_diff)
+    # edges of the distribution
+    top = stats[:top]
+    bottom = stats[:bottom]
 
     deltas.each { |d|
-      if (d > max_diff or d < min_diff)
+      if (d > top or d < bottom)
         puts "Potential outlier #{d} at position #{deltas.index(d)}"
       end
     }
 
-    if min_diff <= 0 and max_diff <= 0
+    if bottom <= 0 and top <= 0
       puts "Original code is better"
       return -1
-    elsif min_diff <= 0 and max_diff >= 0
+    elsif bottom <= 0 and top >= 0
       puts "There is no statistically significant difference."
       return 0
     else
@@ -50,9 +50,30 @@ module WynMark
     end
   end
 
+  def table_stats(title, marks)
+    stats = calc_stats marks
+    table_result(title, stats[:mean], stats[:median], stats[:standard_deviation], 
+                 stats[:top], stats[:bottom])
+    stats
+  end
+
+  def calc_stats(marks)
+    stats = DescriptiveStatistics::Stats.new(marks)
+
+    # statistical significance boundaries
+    stddev = stats.standard_deviation
+    mean = stats.mean
+    top = mean + 2*stddev
+    bottom = mean - 2*stddev
+
+    {mean: stats.mean, median: stats.median, 
+     standard_deviation: stddev, top: top, bottom: bottom}
+  end
+
   # graph the results in gruff
+  DEFAULT_GRAPH_WIDTH = 800 # pixels
   def graph_results(orig_marks, new_marks)
-    g = Gruff::Dot.new(800)
+    g = Gruff::Dot.new(DEFAULT_GRAPH_WIDTH)
     g.title = 'WynMark Results'
     orig_marks.length.times { |n|
       g.labels[n] = n.to_s
@@ -63,7 +84,7 @@ module WynMark
     begin
       g.write('results.png')
     rescue => e
-      # better error
+      # generate a better error
       # 
       # via: http://stackoverflow.com/questions/1014506/imagemagickerror-unable-to-read-font-null-null 
       #
@@ -79,7 +100,8 @@ module WynMark
       `open results.png`
     rescue
       # guessing this is Ubuntu's way of opening images from the Terminal
-      `gnome-open results.png` rescue nil
+      # but I haven't tested it
+      `xdg-open results.png` rescue nil
     end
   end
 
@@ -87,7 +109,8 @@ module WynMark
   # Prettified statistics result table display.
   #
   NUM_FORMATTER = '%.10f'
-  def table_result(mean, median, stdev, max, min) 
+  def table_result(title, mean, median, stdev, top, bottom) 
+    puts title
     table(border: true) do
       row(header: true) do
         column 'stat', width: 13
@@ -106,12 +129,12 @@ module WynMark
         column NUM_FORMATTER % stdev
       end
       row do
-        column 'max (2stdev)'
-        column NUM_FORMATTER % max
+        column '+2stddev'
+        column NUM_FORMATTER % top
       end
       row do
-        column 'min (-2stdev)'
-        column NUM_FORMATTER % min
+        column '-2stddev'
+        column NUM_FORMATTER % bottom
       end
     end
   end
