@@ -6,9 +6,12 @@ OPTIONS = {
   batch: 100,
 }
 
+ARRAY = [1,1,1].freeze
 def original_code
   # Put the original code here
-  [1, 1, 1].inject(:+)
+  #ARRAY.inject(:+) # avoid garbage collection delays
+  
+  [1,1,1].inject(:+)
 end
 
 
