@@ -2,13 +2,14 @@ require_relative '../wynmark.rb'
 include WynMark
 
 OPTIONS = {
-  warmup: 0,
+  warmup: 1,
   batch: 15,
 }
 
 def original_code
   # original code here
-  sleep 0.105
+  # smaller difference => higher chance of insignificance
+  sleep 0.105 
 end
 
 
