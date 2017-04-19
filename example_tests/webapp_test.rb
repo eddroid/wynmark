@@ -3,14 +3,14 @@ include WynMark
 require 'open-uri'
 
 OPTIONS = {
-  warmup: 0,
-  batch: 20,
+  warmup: 1, # you'll probably need to warmup
+  batch: 21,
 }
 
-URL = "http://localhost:3000/users/101"
+URL = "http://localhost:3000/todos"
 
 def original_code
-  open(URL)
+  open(URL) # avoid string gc delays
 end
 
 
