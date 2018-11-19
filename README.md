@@ -16,4 +16,10 @@ Wynmark will:
 
 ## Installation
 
-Uh... it's not a gem or anything. Just, like, copy the code and use it, or something. It's only one file: `wynmark.rb`.
+[gruff](https://github.com/topfunky/gruff) depends on [rmagick](https://github.com/rmagick/rmagick), which depends on [ImageMagick v6](https://formulae.brew.sh/formula/imagemagick@6), which isn't the latest. So you may need to do this to `bundle` successfully.
+
+```sh
+# Terminal
+brew install imagemagick@6
+PKG_CONFIG_PATH="/usr/local/opt/imagemagick@6/lib/pkgconfig" bundle
+```
